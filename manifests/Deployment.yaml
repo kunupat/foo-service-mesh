@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: foo-pipelines-demo-app
+  name: foo-pipelines-demo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: foo-pipelines-demo-app
+  template:
+    metadata:
+      labels:
+        app: foo-pipelines-demo-app
+      annotations:
+        sidecar.istio.io/inject: 'true'
+        
+    spec:
+      containers:
+        - image: image-registry.openshift-image-registry.svc:5000/pipelines-demo/foo:latest
+          imagePullPolicy: Always
+          name: foo
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8443
+              protocol: TCP
+            - containerPort: 8778
+              protocol: TCP
+          env:
+            - name: JAEGER_SERVICE_NAME
+              value: foo-pipelines-demo
+            - name: JAEGER_SAMPLER_TYPE
+              value: const
+            - name: JAEGER_SAMPLER_PARAM
+              value: '1'
+            - name: JAEGER_REPORTER_LOG_SPANS
+              value: 'true'
+            - name: JAEGER_ENDPOINT
+              value: 'http://jaeger-collector.istio-system:14268/api/traces'
+            - name: bar.service.base.url
+              value: 'http://bar:8080'
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
