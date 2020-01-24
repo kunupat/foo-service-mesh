@@ -1,0 +1,56 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: foo-deploy-pipeline-all-resources
+spec:
+  resources:
+  - name: app-git
+    type: git
+  - name: app-image
+    type: image
+  - name: foo-service-mesh-git
+    type: git
+    
+  tasks:
+  - name: build
+    taskRef:
+      name: s2i-java-8
+    params:
+      - name: TLSVERIFY
+        value: "false"
+    resources:
+      inputs:
+      - name: source
+        resource: app-git
+      outputs:
+      - name: image
+        resource: app-image
+  
+  - name: deploy
+    taskRef:
+      name: openshift-client
+    runAfter:
+      - build
+  
+  - name: apply-manifests
+    taskRef:
+      name: apply-foo-manifests
+    resources:
+      inputs:
+        - name: foo-service-mesh-git
+          resource: foo-service-mesh-git
+    runAfter:
+        - deploy
+
+  - name: update-image
+    taskRef:
+      name: update-foo-deployment
+    resources:
+      inputs:
+        - name: image
+          resource: app-image
+    params:
+      - name: deployment
+        value: "foo-image"
+    runAfter:
+        - apply-manifests

@@ -1,0 +1,9 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: foo-git
+spec:
+  type: git
+  params:
+  - name: url
+    value: https://github.com/kunupat/foo
