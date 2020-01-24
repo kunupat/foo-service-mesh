@@ -37,20 +37,20 @@ spec:
       name: apply-foo-manifests
     resources:
       inputs:
-        - name: foo-service-mesh-git
+        - name: source
           resource: foo-service-mesh-git
     runAfter:
         - deploy
 
-  - name: update-image
-    taskRef:
-      name: update-foo-deployment
-    resources:
-      inputs:
-        - name: image
-          resource: app-image
-    params:
-      - name: deployment
-        value: "foo-image"
-    runAfter:
-        - apply-manifests
+ # - name: update-image
+ #   taskRef:
+ #     name: update-foo-deployment
+ #   resources:
+ #     inputs:
+ #       - name: image
+ #         resource: foo-image
+ #   params:
+ #     - name: deployment
+ #       value: "foo-image"
+ #   runAfter:
+ #       - apply-manifests

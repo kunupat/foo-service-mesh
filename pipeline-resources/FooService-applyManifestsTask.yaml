@@ -5,7 +5,7 @@ metadata:
 spec:
   inputs:
     resources:
-      - {type: git, name: foo-service-mesh-git}
+      - {type: git, name: source}
     params:
       - name: manifest_dir
         description: The directory in source that contains yaml manifests
