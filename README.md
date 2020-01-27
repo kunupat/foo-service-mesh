@@ -65,7 +65,7 @@ Verify that all the Tasks are created correctly:
 Create Following Resources:
 1. Foo Git Pipeline Resource
 2. Foo Image Registry Pipeline Resource
-3. 
+3. Foo Service Mesh Git Pipeline Resource
 
 *1. File Name:* `FooGitPipelineResourece.yaml`
 
