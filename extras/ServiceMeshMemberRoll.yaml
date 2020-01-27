@@ -1,33 +1,24 @@
-apiVersion: maistra.io/v1
-kind: ServiceMeshMemberRoll
+apiVersion: tekton.dev/v1alpha1
+kind: Task
 metadata:
-  selfLink: /apis/maistra.io/v1/namespaces/istio-system/servicemeshmemberrolls/default
-  resourceVersion: '41249583'
-  name: default
-  uid: fac42671-17a1-11ea-b656-12ab2f008c5f
-  creationTimestamp: '2019-12-05T20:58:25Z'
-  generation: 9
-  namespace: istio-system
-  ownerReferences:
-    - apiVersion: maistra.io/v1
-      kind: ServiceMeshControlPlane
-      name: basic-installdemo
-      uid: 2ac15b26-17a1-11ea-ab24-0ee93b952e79
-  finalizers:
-    - maistra.io/istio-operator
+  name: apply-foo-manifests
 spec:
-  members:
-    - bookinfo
-    - servicemesh-app
-    - foo-service
-    - servicemeshdemo
-    - pipelines-demo
-status:
-  configuredMembers:
-    - servicemeshdemo
-    - bookinfo
-    - servicemesh-app
-    - foo-service
-  meshGeneration: 5
-  meshReconciledVersion: 1.0.4-2.el8-5
-  observedGeneration: 9
+  inputs:
+    resources:
+      - {type: git, name: source}
+    params:
+      - name: manifest_dir
+        description: The directory in source that contains yaml manifests
+        type: string
+        default: "manifests"
+
+  steps:
+    - name: apply
+      image: quay.io/openshift/origin-cli:latest
+      workingDir: /workspace/source
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+          echo Applying patch to ServiceMeshMemberRoll
+          oc -n istio-system patch --type='json' smmr default -p '[{"op": "add", "path": "/spec/members", "value":["'"pipelines-demo"'","'"bookinfo"'","'"servicemesh-app"'","'"foo-service"'","'"servicemeshdemo"'"]}]'
+          echo -----------------------------------
