@@ -1,3 +1,5 @@
+# Creating Openshift CI/CD Pipeline (Tekton Pipeline) with Kubernetes and Istio resources for `foo` service
+
 Follow the below steps to create Tekton Pipeline in OpenShift Service Mesh to deploy [Foo service][1] in Openshift Service Mesh. This pipeline does the following tasks:
 
 1. Pull source code from Git repository & build the Maven project
@@ -7,16 +9,20 @@ Follow the below steps to create Tekton Pipeline in OpenShift Service Mesh to de
 	- [Service (Kubernetes)][3]
 	- [Virtual Service (Istio)][4]
 	- [Gateway (Istio)][5]
-	
-# Creating OpenShift Pipelines
 
-## Create Tasks
+## Reference Links
+- Openshift Pipeline Tutorial- https://github.com/openshift/pipelines-tutorial
+- Using Pipelines- https://openshift.github.io/pipelines-docs/docs/0.8/assembly_using-pipelines.html
+
+## Creating OpenShift Pipelines
+
+### Create Tasks
 Create following tasks:
 1. OpenShift Client
 2. Java s2i
 3. Apply Manifests
 
-### Install the s2i-java and openshift-client Reusable Tasks
+#### Create the s2i-java and openshift-client Reusable Tasks
 
 Install the `s2i-java` and `openshift-client` reusable Tasks from the [Tekton Catalog][6], which contains a list of reusable Tasks for Pipelines:
 
@@ -24,7 +30,8 @@ Install the `s2i-java` and `openshift-client` reusable Tasks from the [Tekton Ca
 $ oc create -f https://raw.githubusercontent.com/openshift/tektoncd-catalog/release-v0.7/openshift-client/openshift-client-task.yaml
 $ oc create -f https://raw.githubusercontent.com/openshift/pipelines-catalog/release-v0.7/s2i-java-8/s2i-java-8-task.yaml
 ```
-### Install ApplyManifests Task
+#### Create ApplyManifests Task
+This task runs `oc apply` on the YAMLs present in the `manifests` directory of this repository. The `manifests` directory contains YAML definitions for Kubernetes `Deployment` and `Service` resources and Istio's `Virtual Service` and `Gateway` resources.
 
 *File Name:* `FooService-applyManifestsTask.yaml`
 
@@ -61,7 +68,7 @@ Verify that all the Tasks are created correctly:
 
 `$ tkn task ls`
 
-## Create Resources
+### Create Resources
 Create Following Resources:
 1. Foo Git Pipeline Resource
 2. Foo Image Registry Pipeline Resource
@@ -114,7 +121,7 @@ Verify that the resources are created properly using below command:
 ```
 $ tkn resource ls
 ```
-### Create Istio Service Mesh Member Roll (Optional/ Required one time only)
+#### Create Istio Service Mesh Member Roll (Optional/ Required one time only)
 In the below file, make sure to replace the value of `/spec/members` path to match to your Openshift environment. Just add your namespace to the existing namespaces listed in `ServiceMeshMemberRoll`.
 
 *File Name:* `ServiceMeshMemberRoll.yaml`
@@ -147,7 +154,7 @@ spec:
 ```
 `$ oc apply -f ServiceMeshMemberRoll.yaml`
 
-## Create Pipeline
+### Create Pipeline
 
 *File Name:* `FooPipelineAll.yaml`
 
@@ -202,7 +209,7 @@ spec:
 Verify pipeline:
 `$ tkn pipeline ls`
 
-### Run Pipeline
+#### Run Pipeline
 ```
 $ tkn pipeline start foo-deploy-pipeline -r app-git=foo-git -r app-image=foo-image -s pipeline
 ```
