@@ -68,6 +68,8 @@ Verify that all the Tasks are created correctly:
 
 `$ tkn task ls`
 
+---
+
 ### Create Resources
 Create Following Resources:
 1. Foo Git Pipeline Resource
@@ -154,6 +156,8 @@ spec:
 ```
 `$ oc apply -f ServiceMeshMemberRoll.yaml`
 
+---
+
 ### Create Pipeline
 
 *File Name:* `FooPipelineAll.yaml`
@@ -208,6 +212,8 @@ spec:
 
 Verify pipeline:
 `$ tkn pipeline ls`
+
+---
 
 ### Run Pipeline
 ```
