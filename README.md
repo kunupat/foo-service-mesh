@@ -209,7 +209,7 @@ spec:
 Verify pipeline:
 `$ tkn pipeline ls`
 
-#### Run Pipeline
+### Run Pipeline
 ```
 $ tkn pipeline start foo-deploy-pipeline -r app-git=foo-git -r app-image=foo-image -s pipeline
 ```
