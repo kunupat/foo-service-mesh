@@ -159,6 +159,19 @@ spec:
 `$ oc apply -f ServiceMeshMemberRoll.yaml`
 
 ---
+#### Create Role and RoleBinding for `pipeline` Service Account
+
+We get a similar authorization error as shown below in case `pipeline` Service Account is unauthorized to make API calls on Istio Networking resorces required to apply configuration changes to `Istio Virtual Service` and `Istio Gateway`-
+```
+User "system:serviceaccount:pipelines-demo:pipeline" cannot get resource "virtualservices" in API group "networking.istio.io" in the namespace...
+```
+To fix this issue, create a `Role` and `RoleBinding` for `pipeline` Service Account. You can find the respective YAML files for `Role` and `RoleBinding` in /extras directory of this repository. Use following commands to create `Role` and `RoleBinding`:
+
+```
+$ oc apply -f /extras/role.yaml
+$ oc apply -f /extras/role-binding.yaml
+```
+Note that this is only required to be done once.
 
 ### Create Pipeline
 
