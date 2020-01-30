@@ -5,7 +5,7 @@ Follow the below steps to create Tekton Pipeline in OpenShift Service Mesh to de
 1. Pull source code from Git repository & build the Maven project
 2. Build Docker image from the source code, label it and push to OpenShift Container Registry
 3. Apply the following Kubernetes and Istio Manifests:
-	- [Deployment (Kubernetes)][2]
+	- [DeploymentConfig (OpenShift)][2]
 	- [Service (Kubernetes)][3]
 	- [Virtual Service (Istio)][4]
 	- [Gateway (Istio)][5]
@@ -118,6 +118,8 @@ spec:
   - name: url
     value: https://github.com/kunupat/foo-service-mesh
 ```
+`$ oc apply -f FooServiceMeshGit-PipelineResourece.yaml`
+
 Verify that the resources are created properly using below command:
 
 ```
@@ -220,7 +222,7 @@ Verify pipeline:
 $ tkn pipeline start foo-deploy-pipeline -r app-git=foo-git -r app-image=foo-image -s pipeline
 ```
 [1]: https://github.com/kunupat/foo
-[2]: https://github.com/kunupat/foo-service-mesh/blob/master/manifests/Deployment.yaml
+[2]: https://github.com/kunupat/foo-service-mesh/blob/master/manifests/Deployment-config.yaml
 [3]: https://github.com/kunupat/foo-service-mesh/blob/master/manifests/Service.yaml
 [4]: https://github.com/kunupat/foo-service-mesh/blob/master/manifests/gateway.yaml
 [5]: https://github.com/kunupat/foo-service-mesh/blob/master/manifests/virtual-service.yaml
