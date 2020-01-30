@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: DeploymentConfig
 metadata:
   labels:
     app: foo-pipelines-demo-app
@@ -7,15 +7,13 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels:
-      app: foo-pipelines-demo-app
+    name: foo-pipelines-demo-app
   template:
     metadata:
       labels:
         app: foo-pipelines-demo-app
       annotations:
         sidecar.istio.io/inject: 'true'
-        
     spec:
       containers:
         - image: image-registry.openshift-image-registry.svc:5000/pipelines-demo/foo:latest
@@ -46,3 +44,5 @@ spec:
               path: /
               port: 8080
               scheme: HTTP
+  strategy:
+    type: Recreate
